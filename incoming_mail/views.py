@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
 from .models import IncomingLetter
-from .serializers import IncomingLetterSerializer
+from .serializers import IncomingLetterSerializer, IncomingLetterSerializerPost
 
 class IncomingLetterList(APIView):
     # authentication_classes = [authentication.TokenAuthentication]
@@ -15,15 +15,15 @@ class IncomingLetterList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = IncomingLetterSerializer(data=request.data)
+        serializer = IncomingLetterSerializerPost(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class IncomingLetterDetail(APIView):
-    # authentication_classes = [authentication.TokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self, pk):
         try:

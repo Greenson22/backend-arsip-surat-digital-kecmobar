@@ -4,7 +4,7 @@ from .models import Recipient, Source, IncomingLetter
 class RecipientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipient
-        fields = ['id', 'name'] 
+        fields = ['id', 'name']
 
 class SourceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,9 +12,20 @@ class SourceSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 class IncomingLetterSerializer(serializers.ModelSerializer):
-    recipient = RecipientSerializer(read_only=True)  # Nested serializer
-    source = SourceSerializer(read_only=True)      # Nested serializer
+    recipient = RecipientSerializer()  # Nested serializer
+    source = SourceSerializer()      # Nested serializer
 
+    class Meta:
+        model = IncomingLetter
+        fields = '__all__'
+
+class IncomingLetterSerializerSelectedReleated(serializers.ModelSerializer):
+
+    class Meta:
+        model = IncomingLetter
+        fields = '__all__'
+
+class IncomingLetterSerializerPost(serializers.ModelSerializer):
     class Meta:
         model = IncomingLetter
         fields = [
