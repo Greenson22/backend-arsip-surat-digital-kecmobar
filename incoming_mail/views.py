@@ -6,8 +6,8 @@ from .models import IncomingLetter
 from .serializers import IncomingLetterSerializer, IncomingLetterSerializerPost
 
 class IncomingLetterList(APIView):
-    # authentication_classes = [authentication.TokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, format=None):
         incoming_letters = IncomingLetter.objects.all()
@@ -38,7 +38,7 @@ class IncomingLetterDetail(APIView):
     
     def put(self, request, pk, format=None):
         incoming_letter = self.get_object(pk=pk)
-        serializer = IncomingLetterSerializer(incoming_letter, data=request.data)
+        serializer = IncomingLetterSerializerPost(incoming_letter, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
