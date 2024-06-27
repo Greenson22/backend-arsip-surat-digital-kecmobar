@@ -3,30 +3,14 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.timezone import now
 
-class Recipient(models.Model):
-    name = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
-
-class Source(models.Model):
-    name = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
-
 class IncomingLetter(models.Model):
+    source = models.CharField(max_length=255)
+    recipient = models.CharField(max_length=255)
     letter_number = models.CharField(max_length=50)
     agenda_number = models.CharField(max_length=50, blank=True)
     letter_date = models.DateField()
     received_date = models.DateField()
-    recipient = models.ForeignKey(Recipient, on_delete=models.CASCADE)
-    source = models.ForeignKey(Source, on_delete=models.CASCADE)
-    file_url = models.URLField(blank=True, null=True)  # Optional
+    file_url = models.URLField(blank=True, null=True)
     subject = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -46,3 +30,21 @@ def generate_agenda_number(sender, instance, **kwargs):
         else: #jika surat baru
             new_number = 1
         instance.agenda_number = f"{current_year}/{new_number:04d}" 
+
+
+
+# class Recipient(models.Model):
+#     name = models.CharField(max_length=255)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+
+#     def __str__(self):
+#         return self.name
+
+# class Source(models.Model):
+#     name = models.CharField(max_length=255)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+
+#     def __str__(self):
+#         return self.name
