@@ -11,7 +11,7 @@ class IncomingLetterSeed:
                     received_date=date.today(),
                     recipient=nama_indonesia[r.randint(0, len(nama_indonesia)-1)]+' '+marga_manado[r.randint(0, len(marga_manado)-1)], 
                     source=sumber_surat[r.randint(0, len(sumber_surat)-1)],
-                    file_url='https://contoh.url/surat.pdf',
+                    file='incoming_letter/contoh.pdf',
                     subject=subjects[r.randint(0, len(subjects)-1)]
                )
                surat_masuk.save()
