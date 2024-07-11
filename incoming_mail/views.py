@@ -6,17 +6,19 @@ from .models import IncomingLetter
 from .serializers import IncomingLetterSerializer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
+from django.http import FileResponse
+
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 5
     page_size_query_param = 'page_size'
 
 class IncomingLetterList(APIView):
-    authentication_classes = [authentication.TokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.TokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
+    
     filter_backends = [filters.SearchFilter]
-    search_fields = ['id', 'source', 'recipient', 'agenda_number', 'letter_number', 
-                     'agenda_number', 'letter_date', 'received_date', 'file_url', 'subject']
+    search_fields = ['id', 'source', 'recipient', 'agenda_number', 'letter_number', 'agenda_number', 'letter_date', 'received_date', 'file_url', 'subject']
     pagination_class = StandardResultsSetPagination
 
     def get(self, request, format=None):
@@ -35,7 +37,25 @@ class IncomingLetterList(APIView):
     def post(self, request, format=None):
         serializer = IncomingLetterSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            validated_data = serializer.validated_data
+            # Handle file upload
+            file = request.FILES.get('file')
+            new_filename = validated_data['letter_number'].replace('/','_')+' '+validated_data['letter_number'].replace('/', '_')+'.pdf'
+            
+            # Create the IncomingLetter instance
+            incoming_letter = IncomingLetter(
+                source=validated_data['source'],
+                recipient=validated_data['recipient'],
+                letter_number=validated_data['letter_number'],
+                agenda_number=validated_data['agenda_number'],
+                letter_date=validated_data['letter_date'],
+                received_date=validated_data['received_date'],
+                file=file,
+                subject=validated_data['subject']
+            )
+
+            incoming_letter.file.name = new_filename
+            incoming_letter.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -45,8 +65,8 @@ class IncomingLetterList(APIView):
         return queryset
 
 class IncomingLetterDetail(APIView):
-    authentication_classes = [authentication.TokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.TokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self, pk):
         try:
@@ -71,3 +91,14 @@ class IncomingLetterDetail(APIView):
         incoming_letter = self.get_object(pk)
         incoming_letter.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class IncomingLetterFileView(APIView):
+    # authentication_classes = [authentication.TokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk, format=None):
+        try:
+            incoming_letter = IncomingLetter.objects.get(pk=pk)
+            return FileResponse(incoming_letter.file, content_type='application/pdf')
+        except IncomingLetter.DoesNotExist:
+            return Response({'error': 'SuratMasuk tidak ditemukan.'}, status=status.HTTP_404_NOT_FOUND)
