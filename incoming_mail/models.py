@@ -10,7 +10,7 @@ class IncomingLetter(models.Model):
     agenda_number = models.CharField(max_length=50, blank=True)
     letter_date = models.DateField()
     received_date = models.DateField()
-    file_url = models.URLField(blank=True, null=True)
+    file = models.FileField(upload_to='incoming_letter')
     subject = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -30,21 +30,3 @@ def generate_agenda_number(sender, instance, **kwargs):
         else: #jika surat baru
             new_number = 1
         instance.agenda_number = f"{current_year}/{new_number:04d}" 
-
-
-
-# class Recipient(models.Model):
-#     name = models.CharField(max_length=255)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-
-#     def __str__(self):
-#         return self.name
-
-# class Source(models.Model):
-#     name = models.CharField(max_length=255)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-
-#     def __str__(self):
-#         return self.name
