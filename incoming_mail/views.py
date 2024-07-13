@@ -14,8 +14,8 @@ class StandardResultsSetPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
 
 class IncomingLetterList(APIView):
-    # authentication_classes = [authentication.TokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     
     filter_backends = [filters.SearchFilter]
     search_fields = ['id', 'source', 'recipient', 'agenda_number', 'letter_number', 'agenda_number', 'letter_date', 'received_date', 'file_url', 'subject']
@@ -65,8 +65,8 @@ class IncomingLetterList(APIView):
         return queryset
 
 class IncomingLetterDetail(APIView):
-    # authentication_classes = [authentication.TokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self, pk):
         try:
@@ -99,6 +99,22 @@ class IncomingLetterFileView(APIView):
     def get(self, request, pk, format=None):
         try:
             incoming_letter = IncomingLetter.objects.get(pk=pk)
-            return FileResponse(incoming_letter.file, content_type='application/pdf')
+            response = FileResponse(incoming_letter.file, content_type='application/pdf')
+
+            # Menambahkan CSP Header
+            csp_string = (
+                "default-src 'none'; "  # Default tidak mengizinkan apa pun
+                "frame-ancestors http://localhost:5173/; "  # 
+                "form-action 'self'; "  # Form hanya boleh di-submit ke domain yang sama
+                "base-uri 'self'; "  # Base URI harus sama dengan domain saat ini
+                "object-src 'none'; "  # Tidak boleh memuat objek (Flash, dll.)
+                "img-src 'self'; "  # Hanya boleh memuat gambar dari domain yang sama
+                "script-src 'none'; "  # Tidak boleh menjalankan JavaScript
+                "style-src 'self'; "  # Hanya boleh memuat gaya dari domain yang sama
+                "connect-src 'self'; "  # Hanya boleh terhubung ke domain yang sama
+                "report-uri /csp-report;"  # URL untuk pelaporan pelanggaran (opsional)
+            )
+            response["Content-Security-Policy"] = csp_string
+            return response
         except IncomingLetter.DoesNotExist:
             return Response({'error': 'SuratMasuk tidak ditemukan.'}, status=status.HTTP_404_NOT_FOUND)
