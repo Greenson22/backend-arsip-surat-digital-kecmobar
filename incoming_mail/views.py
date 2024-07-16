@@ -18,7 +18,7 @@ class IncomingLetterList(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
     filter_backends = [filters.SearchFilter]
-    search_fields = ['id', 'source', 'recipient', 'agenda_number', 'letter_number', 'agenda_number', 'letter_date', 'received_date', 'file_url', 'subject']
+    search_fields = ['id', 'source', 'recipient', 'agenda_number', 'letter_number', 'agenda_number', 'letter_date', 'received_date', 'file', 'subject']
     pagination_class = StandardResultsSetPagination
 
     def get(self, request, format=None):
