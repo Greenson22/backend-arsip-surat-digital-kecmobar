@@ -90,11 +90,12 @@ class IncomingLetterDetail(APIView):
     def delete(self, request, pk, format=None):
         incoming_letter = self.get_object(pk)
         incoming_letter.delete()
+        incoming_letter.file
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class IncomingLetterFileView(APIView):
-    # authentication_classes = [authentication.TokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, pk, format=None):
         try:
