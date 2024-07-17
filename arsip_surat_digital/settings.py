@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "corsheaders",
     'django_cleanup.apps.CleanupConfig',
     'rest_framework_simplejwt',
-    'rest_framework.authtoken',
     'rest_framework',
     'api',
     'incoming_mail',
@@ -146,23 +145,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user_management.User'
 
-REST_FRAMEWORK = {
-    # 'DEFAULT_FILTER_BACKENDS': ['rest_framework.filters.SearchFilter'],
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    # 'PAGE_SIZE': 5
-}
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 MEDIA_URL = '/media/'
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_RENDERER_CLASSES': [
-#         'rest_framework.renderers.JSONRenderer',
-#         'rest_framework.renderers.BrowsableAPIRenderer',
-#     ]
-# }
-
-# AUTHENTICATION_BACKENDS = [
-#     'user_management.backends.SimpleLoginBackend',  # Nama aplikasi dan backend kustom
-#     'django.contrib.auth.backends.ModelBackend',  # Backend bawaan Django (opsional)
-# ]
+SIMPLE_JWT = {
+    'TOKEN_OBTAIN_SERIALIZER': 'api.serializers.CustomTokenObtainPairSerializer',
+}
