@@ -1,7 +1,8 @@
 from rest_framework.views import APIView
-from rest_framework import authentication, permissions, filters, status
+from rest_framework import permissions, filters, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication # type: ignore
 
 from incoming_mail.models import IncomingLetter
 from incoming_mail.serializers import IncomingLetterSerializer
@@ -11,7 +12,7 @@ class StandardResultsSetPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
 
 class IncomingLetterListView(APIView):
-    authentication_classes = [authentication.TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     
     filter_backends = [filters.SearchFilter]
