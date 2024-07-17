@@ -40,8 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "corsheaders",
     'django_cleanup.apps.CleanupConfig',
+    'rest_framework_simplejwt',
     'rest_framework.authtoken',
     'rest_framework',
+    'api',
     'incoming_mail',
     'user_management',
 ]
