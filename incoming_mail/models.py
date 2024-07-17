@@ -11,7 +11,7 @@ class IncomingLetter(models.Model):
     subject = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
     def __str__(self):
         return f"Surat Masuk No. {self.letter_number}"
 
@@ -30,4 +30,4 @@ class IncomingLetter(models.Model):
 #             new_number = last_number + 1
 #         else: #jika surat baru
 #             new_number = 1
-#         instance.agenda_number = f"{current_year}/{new_number:04d}" 
+#         instance.agenda_number = f"{current_year}/{new_number:04d}"
