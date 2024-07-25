@@ -19,7 +19,7 @@ class IncomingLetterFileView(APIView):
             # Menambahkan CSP Header
             csp_string = (
                 "default-src 'none'; "  # Default tidak mengizinkan apa pun
-                "frame-ancestors http://localhost:5173/; "  # 
+                "frame-ancestors http://localhost:5173/; "
                 "form-action 'self'; "  # Form hanya boleh di-submit ke domain yang sama
                 "base-uri 'self'; "  # Base URI harus sama dengan domain saat ini
                 "object-src 'none'; "  # Tidak boleh memuat objek (Flash, dll.)
@@ -29,7 +29,9 @@ class IncomingLetterFileView(APIView):
                 "connect-src 'self'; "  # Hanya boleh terhubung ke domain yang sama
                 "report-uri /csp-report;"  # URL untuk pelaporan pelanggaran (opsional)
             )
+            
             response["Content-Security-Policy"] = csp_string
+            response['Content-Disposition'] = 'attachment; filename="document.pdf"'
             return response
         except IncomingLetter.DoesNotExist:
             return Response({'error': 'SuratMasuk tidak ditemukan.'}, status=status.HTTP_404_NOT_FOUND)
