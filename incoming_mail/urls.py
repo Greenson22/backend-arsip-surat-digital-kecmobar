@@ -6,7 +6,7 @@ from incoming_mail.views import IncomingLetterListView, IncomingLetterDetailView
 urlpatterns = [
     path('', IncomingLetterListView.as_view()),
     path('<int:pk>/', IncomingLetterDetailView.as_view()),
-    path('file/<int:pk>/', IncomingLetterFileView.as_view(), name='incoming-letter-file'),
+    path('<int:pk>/file/', IncomingLetterFileView.as_view(), name='incoming-letter-file'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
