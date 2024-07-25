@@ -1,21 +1,11 @@
-from django.urls import path
-from rest_framework.urlpatterns import format_suffix_patterns
-from . import views
+from django.urls import include, path
+from rest_framework import routers
+from user_management.views import UserViewSet, UserCreateView
 
-user_list = views.UserViewSet.as_view({
-     'get' : 'list',
-     'post' : 'create',
-})
-
-user_detail = views.UserViewSet.as_view({
-     'get' : 'retrieve',
-     'put' : 'update',
-     'delete' : 'destroy'
-})
+router = routers.DefaultRouter()
+router.register(r'user', UserViewSet)
 
 urlpatterns = [
-    path('', user_list),
-    path('<int:pk>', user_detail)
+     path('', include(router.urls)),
+     path('create/', UserCreateView.as_view())
 ]
-
-urlpatterns = format_suffix_patterns(urlpatterns)
