@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from rest_framework import authentication, permissions, status
+from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication # type: ignore
 
@@ -27,7 +27,7 @@ class IncomingLetterFileView(APIView):
                 "script-src 'none'; "  # Tidak boleh menjalankan JavaScript
                 "style-src 'self'; "  # Hanya boleh memuat gaya dari domain yang sama
                 "connect-src 'self'; "  # Hanya boleh terhubung ke domain yang sama
-                "report-uri /csp-report;"  # URL untuk pelaporan pelanggaran (opsional)
+                "report-to /csp-report;"  # URL untuk pelaporan pelanggaran (opsional)
             )
             
             response["Content-Security-Policy"] = csp_string
