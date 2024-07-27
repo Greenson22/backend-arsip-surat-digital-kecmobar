@@ -15,9 +15,10 @@ class UserViewSet(viewsets.ViewSet):
     filter_backends = [filters.SearchFilter]
     pagination_class = StandardResultsSetPagination
     queryset = User.objects.all()
+    search_fields = ['username', 'first_name', 'last_name', 'email', 'phone_number']
 
     def list(self, request, format=None):
-        filtered_queryset = self.filter_queryset(self.queryset)
+        filtered_queryset = filters.SearchFilter().filter_queryset(self.request, self.queryset, self)
         paginator = self.pagination_class()
         paged_queryset = paginator.paginate_queryset(filtered_queryset, request)
         
@@ -27,11 +28,6 @@ class UserViewSet(viewsets.ViewSet):
         else:
             serializer = UserSerializer(self.queryset, many=True)
             return Response(serializer.data)
-    
-    def post(self, request, format=None):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            User(username='', password='')
 
     def retrieve(self, request, pk):
         item = self.get_object(pk=pk)
@@ -46,10 +42,13 @@ class UserViewSet(viewsets.ViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def filter_queryset(self, queryset):
-        for backend in list(self.filter_backends):
-            queryset = backend().filter_queryset(self.request, queryset, self)
-        return queryset
+    def destroy(self, request, pk):
+        try:
+            item = self.get_object(pk)
+            item.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Http404:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def get_object(self, pk):
         try:
