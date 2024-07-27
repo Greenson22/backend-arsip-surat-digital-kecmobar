@@ -32,7 +32,9 @@ class IncomingLetterDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        incoming_letter = self.get_object(pk)
-        incoming_letter.delete()
-        incoming_letter.file
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        try:
+            incoming_letter = self.get_object(pk)
+            incoming_letter.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Http404:
+            return Response(status=status.HTTP_404_NOT_FOUND)
