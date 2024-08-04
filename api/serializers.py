@@ -7,6 +7,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         # Tambahkan klaim kustom di sini
         token['name'] = user.username
+        token['first_name'] = user.first_name
+        token['last_name'] = user.last_name
         token['is_superuser'] = user.is_superuser
         token['groups'] = list(user.groups.values_list('name', flat=True))
         
