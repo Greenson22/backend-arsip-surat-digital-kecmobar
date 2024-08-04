@@ -9,4 +9,4 @@ class User(AbstractUser):
 	photo_url = models.FileField(upload_to='profile', blank=True)
 
 	def __str__(self):
-		return self.phone_number
+		return self.username
