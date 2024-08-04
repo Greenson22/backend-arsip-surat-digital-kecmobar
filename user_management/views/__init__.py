@@ -1,2 +1,3 @@
 from .user_create_view import UserCreateView
 from .user_viewset import UserViewSet
+from .user_profile_picture_view import UserProfilePictureView
