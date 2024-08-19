@@ -1,6 +1,7 @@
-from rest_framework import viewsets, filters, status
+from rest_framework import viewsets, filters, status, permissions
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from rest_framework_simplejwt.authentication import JWTAuthentication # type: ignore
 
 from django.core.files.base import ContentFile
 from django.utils.text import slugify
@@ -17,6 +18,9 @@ class StandardResultsSetPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
 
 class UserViewSet(viewsets.ViewSet):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
     filter_backends = [filters.SearchFilter]
     pagination_class = StandardResultsSetPagination
     queryset = User.objects.all()
