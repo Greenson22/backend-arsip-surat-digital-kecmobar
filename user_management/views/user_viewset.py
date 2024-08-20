@@ -41,6 +41,7 @@ class UserViewSet(viewsets.ViewSet):
     def create(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
+            self.rename_photo(request, request.data['username'])
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -58,16 +59,7 @@ class UserViewSet(viewsets.ViewSet):
         if serializer.is_valid():
             if not check and request.data.get('old_password'):
                 return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
-
-            # Handling Photo Upload
-            if 'photo_url' in request.FILES:  # Periksa apakah ada foto yang diunggah
-                photo = request.FILES['photo_url']
-
-                # Buat nama file baru
-                ext = photo.name.split('.')[-1]  # Ambil ekstensi file asli
-                new_filename = f"{slugify(item.username)}-{uuid.uuid4().hex[:6]}.{ext}"  # Nama file baru
-                photo.name = new_filename
-
+            self.rename_photo(request, item.username)
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -85,3 +77,13 @@ class UserViewSet(viewsets.ViewSet):
             return User.objects.get(pk=pk)
         except User.DoesNotExist:
             raise Http404
+    
+    def rename_photo(self, request, name):
+        # Handling Photo Upload
+        if 'photo_url' in request.FILES:  # Periksa apakah ada foto yang diunggah
+            photo = request.FILES['photo_url']
+
+            # Buat nama file baru
+            ext = photo.name.split('.')[-1]  # Ambil ekstensi file asli
+            new_filename = f"{slugify(name)}-{uuid.uuid4().hex[:6]}.{ext}"  # Nama file baru
+            photo.name = new_filename
