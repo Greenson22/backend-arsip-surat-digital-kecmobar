@@ -7,8 +7,8 @@ from django.http import Http404
 from django.utils.text import slugify
 import uuid
 
-from .models import OutgoingLetter
-from .serializer import OutgoingLetterSerializer
+from ..models import OutgoingLetter
+from ..serializer import OutgoingLetterSerializer
 
 class StandarResultsSetPagination(PageNumberPagination):
      page_size = 5
