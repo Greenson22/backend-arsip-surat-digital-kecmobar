@@ -1,10 +1,10 @@
 from django.db import models
 
 class IncomingLetter(models.Model):
+    agenda_number = models.CharField(max_length=50, blank=True)
     source = models.CharField(max_length=255)
     recipient = models.CharField(max_length=255)
     letter_number = models.CharField(max_length=50)
-    agenda_number = models.CharField(max_length=50, blank=True)
     letter_date = models.DateField()
     received_date = models.DateField()
     file = models.FileField(upload_to='incoming_letter', blank=True)
