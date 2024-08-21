@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'incoming_mail',
+    'outgoing_mail',
     'user_management',
 ]
 
