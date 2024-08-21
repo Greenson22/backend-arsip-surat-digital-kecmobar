@@ -1,12 +1,11 @@
 from django.urls import path
-from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework.routers import DefaultRouter
+from incoming_mail.views import IncomingLetterFileView, IncomingLetterViewSet
 
-from incoming_mail.views import IncomingLetterListView, IncomingLetterDetailView, IncomingLetterFileView
+router = DefaultRouter()
+router.register('', IncomingLetterViewSet)
 
 urlpatterns = [
-    path('', IncomingLetterListView.as_view()),
-    path('<int:pk>/', IncomingLetterDetailView.as_view()),
     path('<int:pk>/file/', IncomingLetterFileView.as_view(), name='incoming-letter-file'),
 ]
-
-urlpatterns = format_suffix_patterns(urlpatterns)
+urlpatterns += router.urls
