@@ -57,20 +57,20 @@ class OutgoingLetterViewSet(viewsets.ViewSet):
           try:
                letter = self.get_object(pk=pk)
                letter.delete()
-               return Response({'detail':'object berhasil dihapus'}, 
+               return Response({'detail':'Surat berhasil dihapus'}, 
                                status=status.HTTP_204_NO_CONTENT)
           except PermissionDenied:
-               return Response({'detail':'anda tidak memiliki izin untuk menghapus object ini'}, 
+               return Response({'detail':'Anda tidak memiliki izin untuk menghapus surat ini'}, 
                                status=status.HTTP_403_FORBIDDEN)
           except Exception as e:
-               return Response({"detail": f"Terjadi kesalahan saat menghapus objek: {str(e)}"}, 
+               return Response({"detail": f"Terjadi kesalahan saat menghapus surat: {str(e)}"}, 
                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
      def get_object(self, pk):
           try:
                return OutgoingLetter.objects.get(pk=pk)
           except OutgoingLetter.DoesNotExist:
-               return Http404
+               raise Http404('Surat tidak ditemukan')
 
      def rename_file(self, request, name):
         # Handling Photo Upload
