@@ -3,10 +3,11 @@ from rest_framework import routers
 from user_management.views import UserViewSet, UserCreateView, UserProfilePictureView
 
 router = routers.DefaultRouter()
-router.register(r'user', UserViewSet)
+router.register('', UserViewSet)
 
 urlpatterns = [
-     path('', include(router.urls)),
      path('create/', UserCreateView.as_view()),
      path('user/<int:pk>/profile_picture/', UserProfilePictureView.as_view())
 ]
+
+urlpatterns += router.urls
