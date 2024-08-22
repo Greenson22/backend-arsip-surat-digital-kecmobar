@@ -1,19 +1,16 @@
 from rest_framework import filters, status
 from rest_framework.viewsets import ViewSet
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from django.http import Http404
 
 from ..models import IncomingLetter
 from ..serializers import IncomingLetterSerializer
+from arsip_surat_digital.views import StandardResultPagePagination
 
-class StandarResultPagePagination(PageNumberPagination):
-     page_size = 5
-     page_query_param = 'page_size'
 
 class IncomingLetterViewSet(ViewSet):
-     pagination_class = StandarResultPagePagination
+     pagination_class = StandardResultPagePagination
      queryset = IncomingLetter.objects.all()
      serializer = IncomingLetterSerializer
      search_fields = ['source', 'recipient', 'agenda_number', 'letter_number', 'agenda_number', 'file', 'subject']
