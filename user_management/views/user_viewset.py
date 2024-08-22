@@ -1,28 +1,19 @@
 from rest_framework import viewsets, filters, status, permissions
 from rest_framework.response import Response
-from rest_framework.pagination import PageNumberPagination
-from rest_framework_simplejwt.authentication import JWTAuthentication # type: ignore
 
-from django.core.files.base import ContentFile
 from django.utils.text import slugify
 import uuid
 
 from django.http import Http404
 from django.contrib.auth import authenticate
 
-from user_management.models import User
-from user_management.serializers import UserSerializer
-
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 5
-    page_size_query_param = 'page_size'
+from ..models import User
+from ..serializers import UserSerializer
+from arsip_surat_digital.views import StandardResultPagePagination
 
 class UserViewSet(viewsets.ViewSet):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-
     filter_backends = [filters.SearchFilter]
-    pagination_class = StandardResultsSetPagination
+    pagination_class = StandardResultPagePagination
     queryset = User.objects.all()
     search_fields = ['username', 'first_name', 'last_name', 'email', 'phone_number']
 
