@@ -24,19 +24,12 @@ class UserSerializer(serializers.ModelSerializer):
 		user.save()
 		return user
 
-	def update(self, instance, validated_data):
-		instance.__dict__.update(validated_data) 
+	# def update(self, instance, validated_data):
+	# 	instance.__dict__.update(validated_data)
 
-		password = validated_data.get('password', None)
-		if password:
-			instance.password = make_password(password)
+	# 	password = validated_data.get('password', None)
+	# 	if password:
+	# 		instance.password = make_password(password)
 		
-		instance.save()
-		return instance
-
-class UserProfilePictureSerializer(serializers.ModelSerializer):
-	# photo_url = serializers.ImageField(use_url=False)
-	
-	class Meta:
-		model = User
-		fields = ['photo_url']
+	# 	instance.save()
+	# 	return instance
