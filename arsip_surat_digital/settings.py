@@ -163,5 +163,10 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    ]
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'rest_framework.filters.SearchFilter',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'arsip_surat_digital.views.StandardResultPagePagination',
+    'PAGE_SIZE': 5,  # Jumlah item per halaman
 }
