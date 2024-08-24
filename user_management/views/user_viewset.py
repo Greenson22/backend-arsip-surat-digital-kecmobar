@@ -14,7 +14,36 @@ class UserViewSet(viewsets.GenericViewSet,
     serializer_class = UserSerializer
     search_fields = ['username', 'first_name', 'last_name', 'email', 'phone_number']
 
-     
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+
+        # Check if 'old_password' is provided and matches the current password
+        if 'new_password' in request.data:
+            if not instance.check_password(request.data['password']):
+                return Response({'error': 'Password lama yang dimasukan tidak cocok'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                instance.set_password(request.data['new_password'])
+                request.data.pop('password', None)
+                request.data.pop('new_password', None)
+
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
 
 # from rest_framework import viewsets, filters, status, permissions
 # from rest_framework.response import Response
