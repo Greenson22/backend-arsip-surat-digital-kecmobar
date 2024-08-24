@@ -24,12 +24,12 @@ class UserSerializer(serializers.ModelSerializer):
 		user.save()
 		return user
 
-	# def update(self, instance, validated_data):
-	# 	instance.__dict__.update(validated_data)
+	def update(self, instance, validated_data):
+		instance.__dict__.update(validated_data)
 
-	# 	password = validated_data.get('password', None)
-	# 	if password:
-	# 		instance.password = make_password(password)
+		password = validated_data.get('password', None)
+		if password:
+			instance.password = make_password(password)
 		
-	# 	instance.save()
-	# 	return instance
+		instance.save()
+		return instance
