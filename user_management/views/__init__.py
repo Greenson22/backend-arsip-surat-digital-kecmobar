@@ -1,3 +1,2 @@
 from .user_viewset import UserViewSet
 from .user_profile_picture_view import UserProfilePictureView
-from .user_password_viewset import UserPasswordViewSet
