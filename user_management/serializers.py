@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
 		fields = ['id', 'username', 'password', 'first_name', 'last_name', 
-		'email', 'is_active', 'is_superuser', 'is_staff', 'date_joined', 'phone_number', 'photo_url']
+		'email', 'is_active', 'is_superuser', 'date_joined', 'phone_number', 'photo_url']
 		extra_kwargs = {
 			'password': {
 				'write_only': True,
@@ -25,6 +25,16 @@ class UserSerializer(serializers.ModelSerializer):
 		return user
 
 	def update(self, instance, validated_data):
+		# Hanya admin yang bisa mengubah 'is_staff', 'is_active', dan 'is_superuser'
+		restricted_fields = ['is_staff', 'is_active', 'is_superuser']
+		if not self.context['request'].user.is_staff:
+			for field in restricted_fields:
+				if field in validated_data:
+					validated_data.pop(field)
+		# Selalu samakan nilai 'is_staff' dengan 'is_superuser'
+		if 'is_superuser' in validated_data or 'is_staff' in validated_data:
+			validated_data['is_staff'] = validated_data['is_superuser']
+
 		instance.__dict__.update(validated_data)
 
 		password = validated_data.get('password', None)
