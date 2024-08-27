@@ -1,12 +1,14 @@
 from django.db import models
 
 class OutgoingLetter(models.Model):
-     agenda_number = models.CharField(max_length=255)
+     agenda_number = models.CharField(max_length=255, blank=True)
      letter_number = models.CharField(max_length=50)
      letter_date = models.DateField()
      destination = models.CharField(max_length=255)
      subject = models.CharField(max_length=255)
      file = models.FileField(upload_to='outgoing_mail', blank=True)
+     created_at = models.DateTimeField(auto_now_add=True)
+     updated_at = models.DateTimeField(auto_now=True)
 
      def __str__(self):
           return f"Surat Masuk No. {self.letter_number}"
