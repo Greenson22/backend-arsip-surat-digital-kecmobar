@@ -9,7 +9,11 @@ from user_management.models import User
 class UserProfilePictureView(APIView):
      def get(self, request, pk):
           try:
-               user = User.objects.get(pk=pk)
+               user = request.user
+               if not request.user.is_authenticated:
+                    return Response({'error':'AnonymousUser'}, status=status.HTTP_400_BAD_REQUEST)
+               if request.user.is_staff and request.user.is_superuser:
+                    user = User.objects.get(pk=pk)
                response = FileResponse(user.photo_url)
 
                # Menambahkan CSP Header
