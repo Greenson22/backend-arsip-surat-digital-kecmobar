@@ -1,14 +1,14 @@
 from rest_framework import viewsets, mixins
 from ..models import User
 from ..serializers import UserSerializer
-from .model_mixin import ListCustom, CreateCustom, RetrieveCustom, UpdateCustom
+from .model_mixin import ListCustom, CreateCustom, RetrieveCustom, UpdateCustom, DestroyCustom
 
 class UserViewSet(viewsets.GenericViewSet,
                   ListCustom,
                   CreateCustom,
                   RetrieveCustom,
                   UpdateCustom,
-                  mixins.DestroyModelMixin):
+                  DestroyCustom):
      
     queryset = User.objects.all()
     serializer_class = UserSerializer
