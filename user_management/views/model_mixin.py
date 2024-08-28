@@ -39,7 +39,8 @@ class UpdateCustom(mixins.UpdateModelMixin):
         
         # Periksa keberadaan new_password di request.data
         if 'new_password' in data:
-            if instance.check_password(data['password']):
+            # jika password benar atau dia seorang admin
+            if instance.check_password(data['password']) or (request.user.is_staff and request.user.is_superuser):
                 data['password'] = data['new_password']
             else:
                 return Response({'error':'password anda salah'}, status=status.HTTP_400_BAD_REQUEST)
@@ -79,3 +80,14 @@ class CreateCustom(mixins.CreateModelMixin):
             return {'Location': str(data[api_settings.URL_FIELD_NAME])}
         except (TypeError, KeyError):
             return {}
+
+class DestroyCustom(mixins.DestroyModelMixin):
+     def destroy(self, request, *args, **kwargs):
+        if not (request.user.is_staff and request.user.is_superuser):
+            return Response({'error':'Anda bukan administrator'}, status=status.HTTP_400_BAD_REQUEST)
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+     
+     def perform_destroy(self, instance):
+        instance.delete()
