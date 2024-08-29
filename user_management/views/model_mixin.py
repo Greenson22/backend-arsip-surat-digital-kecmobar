@@ -30,6 +30,7 @@ class UpdateCustom(mixins.UpdateModelMixin):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = request.user
+        print(request.data)
         data = request.data.copy()
 
         if request.user.is_staff and request.user.is_superuser:
@@ -40,10 +41,12 @@ class UpdateCustom(mixins.UpdateModelMixin):
         # Periksa keberadaan new_password di request.data
         if 'new_password' in data:
             # jika password benar atau dia seorang admin
-            if instance.check_password(data['password']) or (request.user.is_staff and request.user.is_superuser):
+            if ('password' in data and instance.check_password(data['password'])) or (request.user.is_staff and request.user.is_superuser):
                 data['password'] = data['new_password']
             else:
                 return Response({'error':'password anda salah'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            data.pop('password', None) # membuang password
         
         serializer = self.get_serializer(instance, data=data, partial=partial)
         serializer.is_valid(raise_exception=True)
@@ -84,7 +87,7 @@ class CreateCustom(mixins.CreateModelMixin):
 class DestroyCustom(mixins.DestroyModelMixin):
      def destroy(self, request, *args, **kwargs):
         if not (request.user.is_staff and request.user.is_superuser):
-            return Response({'error':'Anda bukan administrator'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error':'Hanya administrator yang bisa menghapus pengguna'}, status=status.HTTP_400_BAD_REQUEST)
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
