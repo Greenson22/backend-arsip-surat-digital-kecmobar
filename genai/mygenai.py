@@ -42,5 +42,3 @@ class MyGenAi():
           image = Image.open(file_path)
           response = self.chat_session.send_message(image)
           return response.text
-     
-GENAI_MODEL = MyGenAi()
