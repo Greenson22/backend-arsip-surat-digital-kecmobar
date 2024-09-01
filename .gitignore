@@ -2,3 +2,4 @@ __pycache__
 /media
 /incoming_mail/migrations/
 /outgoing_mail/migrations/
+/genai/migrations/
