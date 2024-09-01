@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework',
     'api',
+    'genai',
     'incoming_mail',
     'outgoing_mail',
     'user_management',
