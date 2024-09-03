@@ -5,11 +5,15 @@ $ pip install google-generativeai
 """
 
 import google.generativeai as genai
-from PIL import Image
+
+system_intructions = {
+     "incomingmail" : "**Instruksi:**\n\n1. **Ekstraksi Entitas:** Dari file yang diberikan, ekstrak semua entitas berikut:\n    * no agenda\n    * nomor surat\n    * tanggal surat\n    * tanggal terima\n    * asal surat\n    * perihal\n    * penerima\n\n2. **Format JSON:** Kembalikan entitas yang diekstrak dalam format JSON dengan struktur berikut:\n    * `agenda_number`: (nilai dari 'no agenda')\n    * `letter_number`: (nilai dari 'nomor surat')\n    * `letter_date`: (nilai dari 'tanggal surat', diformat sebagai yyyy-mm-dd)\n    * `received_date`: (nilai dari 'tanggal terima', diformat sebagai yyyy-mm-dd)\n    * `source`: (nilai dari 'asal surat')\n    * `subject`: (ringkasan dari 'perihal' dalam surat)\n    * `recipient`: (nilai dari 'penerima')\n\n3. **Penanganan Nilai Kosong:** Jika suatu entitas tidak ditemukan dalam teks, berikan null (`\"\"`) untuk kunci yang sesuai dalam JSON.\n\n4. **Output Eksklusif:** Pastikan output hanya berisi JSON yang dijelaskan di atas, tanpa informasi tambahan lainnya.",
+     "summary" : "Tolong proses file ini:\n1. **Ringkasan:** Buat ringkasan yang baik dari file ini dalam bahasa Indonesia.\n2. **Output:** \n   * Buat objek JSON dengan key \"summary\" dan value berupa ringkasan yang telah dibuat.",
+}
 
 class MyGenAi():
      # Create the model
-     def __init__(self) -> None:     
+     def __init__(self, instruction) -> None:     
           genai.configure(api_key='AIzaSyB8KwQjNr6RAyElNxcTMTDI_rPGtPjvWUw')
           self.generation_config = {
                "temperature": 1,
@@ -18,27 +22,27 @@ class MyGenAi():
                "max_output_tokens": 8192,
                "response_mime_type": "application/json",
           }
-          self.model = self.create_model()
-          self.chat_session = self.create_chat()
+          self.create_model(instruction)
+          self.create_chat()
      
-     def create_model(self):
+     def create_model(self, system_instruction):
           model = genai.GenerativeModel(
                model_name="gemini-1.5-flash",
                generation_config=self.generation_config,
                # safety_settings = Adjust safety settings
                # See https://ai.google.dev/gemini-api/docs/safety-settings
-               system_instruction="Ambil semua entitie mulai dari: no agenda, nomor surat, tanggal surat, tanggal terima, asal surat, perihal, penerima. \n1. Kembalikan dalam bentuk json\n2. Untuk perihal tolong ringkas dari surat tersebut\n3. Format tanggal dd/mm/yy dengan menggunakan angka semua\n4. Untuk semua key lebih dari satu kata, dihubungkan dengan tanda underscore.\n5. Jika suatu entitie kosong, maka buatkan saya string kosong",
+               system_instruction=system_instruction,
           )
-          return model
+          self.model = model
+          self.create_chat()
 
      def create_chat(self):
           chat_session = self.model.start_chat(
                history=[
                ]
           )
-          return chat_session
+          self.chat_session = chat_session
      
-     def send_message(self, file_path):
-          image = Image.open(file_path)
-          response = self.chat_session.send_message(image)
+     def send_message_file(self, file):
+          response = self.chat_session.send_message(genai.upload_file(file))
           return response.text
