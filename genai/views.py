@@ -1,22 +1,22 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.apps import apps
 import json
 import tempfile
 import os
+
 from .mygenai import MyGenAi
 from .mygenai import system_intructions
 
 model = MyGenAi(system_intructions['incomingmail'])
 model2 = MyGenAi(system_intructions['summary'])
 
-class LetterDetailView(APIView):
+class ExtractLetterEntitiesView(APIView):
      def post(self, request):
           global model
           response = process_file_with_model( request.FILES['file'], model)
           return Response(json.loads(response))
      
-class LetterSummaryView(APIView):
+class SummarizeLetterView(APIView):
      def post(self, request):
           global model2
           response = process_file_with_model(request.FILES['file'], model2)
