@@ -5,6 +5,7 @@ $ pip install google-generativeai
 """
 
 import google.generativeai as genai
+import pathlib
 
 system_intructions = {
      "incomingmail" : "**Instruksi:**\n\n1. **Ekstraksi Entitas:** Dari file yang diberikan, ekstrak semua entitas berikut:\n    * no agenda\n    * nomor surat\n    * tanggal surat\n    * tanggal terima\n    * asal surat\n    * perihal\n    * penerima\n\n2. **Format JSON:** Kembalikan entitas yang diekstrak dalam format JSON dengan struktur berikut:\n    * `agenda_number`: (nilai dari 'no agenda')\n    * `letter_number`: (nilai dari 'nomor surat')\n    * `letter_date`: (nilai dari 'tanggal surat', diformat sebagai yyyy-mm-dd)\n    * `received_date`: (nilai dari 'tanggal terima', diformat sebagai yyyy-mm-dd)\n    * `source`: (nilai dari 'asal surat')\n    * `subject`: (ringkasan dari 'perihal' dalam surat)\n    * `recipient`: (nilai dari 'penerima')\n\n3. **Penanganan Nilai Kosong:** Jika suatu entitas tidak ditemukan dalam teks, berikan null (`\"\"`) untuk kunci yang sesuai dalam JSON.\n\n4. **Output Eksklusif:** Pastikan output hanya berisi JSON yang dijelaskan di atas, tanpa informasi tambahan lainnya.",
@@ -45,4 +46,19 @@ class MyGenAi():
      
      def send_message_file(self, file):
           response = self.chat_session.send_message(genai.upload_file(file))
+          return response.text
+
+     def generate_content(self, file):
+          response = self.model.generate_content(genai.upload_file(file))
+          return response.text
+     
+     def generate_content_file(self, file):
+          prompt = ''
+          response = self.model.generate_content([
+               prompt,
+                   {
+                         "mime_type": "application/pdf",
+                         "data": file.read()
+                    }
+          ])
           return response.text
