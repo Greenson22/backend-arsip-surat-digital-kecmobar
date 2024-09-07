@@ -6,3 +6,4 @@ django-cleanup
 mysqlclient
 pillow
 google-generativeai
+django-cors-headers
