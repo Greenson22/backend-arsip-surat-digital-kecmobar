@@ -2,13 +2,13 @@ from django.db import models
 
 class IncomingLetter(models.Model):
     agenda_number = models.CharField(max_length=50, blank=True)
-    source = models.CharField(max_length=255)
-    recipient = models.CharField(max_length=255)
-    letter_number = models.CharField(max_length=50)
-    letter_date = models.DateField()
-    received_date = models.DateField()
+    source = models.CharField(max_length=255, blank=True)
+    recipient = models.CharField(max_length=255, blank=True)
+    letter_number = models.CharField(max_length=50, blank=True)
+    letter_date = models.DateField(blank=True)
+    received_date = models.DateField(blank=True)
     file = models.FileField(upload_to='incoming_letter', blank=True)
-    subject = models.CharField(max_length=255)
+    subject = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
