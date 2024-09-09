@@ -1,12 +1,19 @@
 from django.db import models
+from django.utils.text import slugify
+import uuid
+
+def rename_outgoing_letter_file(instance, filename):
+    ext = filename.split('.')[-1]
+    new_filename = f'outgoing_letter_{slugify(instance.letter_number)}_{uuid.uuid4()}.{ext}' 
+    return f'outgoing_letter/{new_filename}'
 
 class OutgoingLetter(models.Model):
      agenda_number = models.CharField(max_length=255, blank=True)
-     letter_number = models.CharField(max_length=50)
-     letter_date = models.DateField()
-     destination = models.CharField(max_length=255)
-     subject = models.CharField(max_length=255)
-     file = models.FileField(upload_to='outgoing_mail', blank=True)
+     letter_number = models.CharField(max_length=50, blank=True)
+     letter_date = models.DateField(blank=True, null=True)
+     destination = models.CharField(max_length=255, blank=True)
+     subject = models.CharField(max_length=255, blank=True)
+     file = models.FileField(upload_to=rename_outgoing_letter_file, blank=True)
      created_at = models.DateTimeField(auto_now_add=True)
      updated_at = models.DateTimeField(auto_now=True)
 
