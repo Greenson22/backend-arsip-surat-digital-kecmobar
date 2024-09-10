@@ -5,10 +5,10 @@ $ pip install google-generativeai
 """
 
 import google.generativeai as genai
-import pathlib
 
 system_intructions = {
      "incomingmail" : "**Instruksi:**\n\n1. **Ekstraksi Entitas:** Dari file yang diberikan, ekstrak semua entitas berikut:\n    * no agenda\n    * nomor surat\n    * tanggal surat\n    * tanggal terima\n    * asal surat\n    * perihal\n    * penerima\n\n2. **Format JSON:** Kembalikan entitas yang diekstrak dalam format JSON dengan struktur berikut:\n    * `agenda_number`: (nilai dari 'no agenda')\n    * `letter_number`: (nilai dari 'nomor surat')\n    * `letter_date`: (nilai dari 'tanggal surat', diformat sebagai yyyy-mm-dd)\n    * `received_date`: (nilai dari 'tanggal terima', diformat sebagai yyyy-mm-dd)\n    * `source`: (nilai dari 'asal surat')\n    * `subject`: (ringkasan dari 'perihal' dalam surat)\n    * `recipient`: (nilai dari 'penerima')\n\n3. **Penanganan Nilai Kosong:** Jika suatu entitas tidak ditemukan dalam teks, berikan null (`\"\"`) untuk kunci yang sesuai dalam JSON.\n\n4. **Output Eksklusif:** Pastikan output hanya berisi JSON yang dijelaskan di atas, tanpa informasi tambahan lainnya.",
+     "outgoingmail" : "**Instruksi:**\n1. **Ekstraksi Entitas:** Dari file yang diberikan, ekstrak semua entitas berikut:\n    * tanggal surat\n    * tujuan surat\n    * nomor surat\n    * perihal\n\n2. **Format JSON:** Kembalikan entitas yang diekstrak dalam format JSON dengan struktur berikut:\n    * `letter_date`: (nilai dari 'tanggal surat', diformat sebagai yyyy-mm-dd)\n    * `destination`: (nilai dari 'tujuan surat')\n    * `letter_number`: (nilai dari 'nomor surat')\n    * `subject`: (ringkasan dari 'perihal' dalam surat)\n\n3. **Penanganan Nilai Kosong:** Jika suatu entitas tidak ditemukan dalam teks, masukan null untuk kunci yang sesuai dalam JSON.\n\n4. **Output Eksklusif:** Pastikan output hanya berisi JSON yang dijelaskan di atas, tanpa informasi tambahan lainnya.",
      "summary" : "Tolong proses file ini:\n1. **Ringkasan:** Buat ringkasan yang baik dari file ini dalam bahasa Indonesia.\n2. **Output:** \n   * Buat objek JSON dengan key \"summary\" dan value berupa ringkasan yang telah dibuat.",
 }
 
