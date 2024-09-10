@@ -1,6 +1,5 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.http import StreamingHttpResponse
 import json
 import tempfile
 import os
@@ -8,15 +7,18 @@ import os
 from .mygenai import MyGenAi
 from .mygenai import system_intructions
 
-model = MyGenAi(system_intructions['incomingmail'])
-model2 = MyGenAi(system_intructions['summary'])
-import time
+model_incomingmail = MyGenAi(system_intructions['incomingmail'])
+model_outgoingmail = MyGenAi(system_intructions['outgoingmail'])
+model_summary = MyGenAi(system_intructions['summary'])
 
 class ExtractLetterEntitiesView(APIView):
      def post(self, request):
-          global model
+          model = model_incomingmail
+          # mengecek jika request terdapat model type outgoingmail
+          if 'model_type' in request.data and request.data['model_type'] == 'outgoingmail':
+               model = model_outgoingmail
+
           file = request.FILES['file']
-          print('perminataan')
           data = json.loads(model.generate_content_file(file))
           response = {
                'name' : file.name,
@@ -27,7 +29,7 @@ class ExtractLetterEntitiesView(APIView):
 class SummarizeLetterView(APIView):
      def post(self, request):
           global model2
-          response = process_file_with_model(request.FILES['file'], model2)
+          response = process_file_with_model(request.FILES['file'], model_summary)
           return Response(json.loads(response))
      
 class MultipleExtractLetterEntitiesView(APIView):
