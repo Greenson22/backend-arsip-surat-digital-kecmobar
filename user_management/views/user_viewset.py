@@ -1,4 +1,4 @@
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets
 from ..models import User
 from ..serializers import UserSerializer
 from .model_mixin import ListCustom, CreateCustom, RetrieveCustom, UpdateCustom, DestroyCustom
