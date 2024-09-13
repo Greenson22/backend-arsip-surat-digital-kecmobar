@@ -31,8 +31,8 @@ def generate_agenda_number(sender, instance, **kwargs):
         last_letter = OutgoingLetter.objects.filter(created_at__year=current_year).order_by('-agenda_number').first()
 
         if last_letter: #jika terdapat surat terakhir
-            last_number = int(last_letter.agenda_number.split('/')[-1])
-            new_number = last_number + 1
+            last_number = int(last_letter.agenda_number.split('/')[-1]) #mengambil nomor surat terakhir
+            new_number = last_number + 1 #menambahkan satu
         else: #jika surat baru
             new_number = 1
         instance.agenda_number = f"{current_year}/{new_number:04d}"
