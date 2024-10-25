@@ -16,6 +16,7 @@ class IncomingLetter(models.Model):
     received_date = models.DateField(blank=True, null=True)
     file = models.FileField(upload_to=rename_incoming_letter_file, blank=True)
     subject = models.CharField(max_length=255, blank=True)
+    clasify = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
