@@ -10,11 +10,12 @@ from .mygenai import system_intructions
 model_incomingmail = MyGenAi(system_intructions['incomingmail'])
 model_outgoingmail = MyGenAi(system_intructions['outgoingmail'])
 model_summary = MyGenAi(system_intructions['summary'])
+model_ocr = MyGenAi(system_intructions['ocr'])
 
 class ExtractLetterEntitiesView(APIView):
      def post(self, request):
           model = model_incomingmail
-          # mengecek jika request terdapat model type outgoingmail
+          # mengecek jika request terdapat model dan type outgoingmail
           if 'model_type' in request.data and request.data['model_type'] == 'outgoingmail':
                model = model_outgoingmail
 
@@ -25,7 +26,19 @@ class ExtractLetterEntitiesView(APIView):
                'entities' : data
                }
           return Response(response)
-     
+
+class LetterOCRView(APIView):
+     def post(self, request):
+          model =  model_ocr
+
+          file = request.FILES['file']
+          data = model.generate_content_file(file)
+          response = {
+               'name' : file.name,
+               'content' : data
+               }
+          return Response(response)
+
 class SummarizeLetterView(APIView):
      def post(self, request):
           global model2
@@ -42,7 +55,7 @@ class MultipleExtractLetterEntitiesView(APIView):
                         for chunk in file.chunks():
                             temp_file.write(chunk)
           return Response({})
-     
+
 def process_file_with_model(file, model):
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_file_path = os.path.join(temp_dir, file.name)
