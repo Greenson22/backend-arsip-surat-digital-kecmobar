@@ -7,3 +7,4 @@ mysqlclient
 pillow
 google-generativeai
 django-cors-headers
+scikit-learn
