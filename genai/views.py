@@ -4,6 +4,8 @@ import json
 import tempfile
 import os
 
+from incoming_mail.models import IncomingLetter
+
 from .mygenai import MyGenAi
 from .mygenai import system_intructions, load_vectorizer_nb, load_letter_model_nb
 
@@ -15,6 +17,8 @@ model_ocr = MyGenAi(system_intructions['ocr'])
 # naive bayes
 model_naivebayes = load_letter_model_nb()
 vectorizer = load_vectorizer_nb()
+
+category = {1: 'Surat Perintah', 4: 'Surat Undangan', 0: 'Surat Edaran', 2: 'Surat Permohonan', 3: 'Surat Tugas'}
 
 class ExtractLetterEntitiesView(APIView):
      def post(self, request):
@@ -51,12 +55,25 @@ class LetterClassificationView(APIView):
           letter_matrix = tfidf_vectorizer.transform([letter])
           predict = modelnb.predict(letter_matrix)
           return Response({'category': predict})
-          # {'Surat Perintah': 1,
-          # 'Surat Undangan': 4,
-          # 'Surat Edaran': 0,
-          # 'Surat Permohonan': 2,
-          # 'Surat Tugas': 3}
-
+     
+class LetterLocalClassification(APIView):
+     def post(self, request):
+          # mengambil file pdf surat
+          letter = IncomingLetter.objects.get(pk=request.data['id'])
+          # # melakukan ekstrak text dari surat
+          model =  model_ocr
+          letter_text = model.generate_content_file(letter.file)
+          # melakukan classify dengan model naive bayes
+          modelnb = model_naivebayes
+          tfidf_vectorizer = vectorizer
+          letter_matrix = tfidf_vectorizer.transform([letter_text])
+          predict = modelnb.predict(letter_matrix)
+          letter.clasify = predict[0]
+          letter.save()
+          return Response(
+               {'category': predict,
+                'category_name':category[predict[0]]
+                })
 
 class SummarizeLetterView(APIView):
      def post(self, request):
