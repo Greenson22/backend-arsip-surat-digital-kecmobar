@@ -14,7 +14,8 @@ class OutgoingLetter(models.Model):
      destination = models.CharField(max_length=255, blank=True)
      subject = models.CharField(max_length=255, blank=True)
      file = models.FileField(upload_to=rename_outgoing_letter_file, blank=True)
-     created_at = models.DateTimeField(auto_now_add=True)
+     clasify = models.IntegerField(blank=True, null=True)
+     created_at = models.DateTimeField(auto_now_add=True) 
      updated_at = models.DateTimeField(auto_now=True)
 
      def __str__(self):
