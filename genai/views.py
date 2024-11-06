@@ -5,6 +5,7 @@ import tempfile
 import os
 
 from incoming_mail.models import IncomingLetter
+from outgoing_mail.models import OutgoingLetter
 
 from .mygenai import MyGenAi
 from .mygenai import system_intructions, load_vectorizer_nb, load_letter_model_nb
@@ -59,7 +60,11 @@ class LetterClassificationView(APIView):
 class LetterLocalClassification(APIView):
      def post(self, request):
           # mengambil file pdf surat
-          letter = IncomingLetter.objects.get(pk=request.data['id'])
+          if request.data['type'] == 'incomingmail':
+               letter = IncomingLetter.objects.get(pk=request.data['id'])
+          else:
+               letter = OutgoingLetter.objects.get(pk=request.data['id'])
+
           # # melakukan ekstrak text dari surat
           model =  model_ocr
           letter_text = model.generate_content_file(letter.file)
