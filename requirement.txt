@@ -8,3 +8,4 @@ pillow
 google-generativeai
 django-cors-headers
 scikit-learn
+djangorestframework-simplejwt
