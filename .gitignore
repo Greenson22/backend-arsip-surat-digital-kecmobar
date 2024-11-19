@@ -3,3 +3,5 @@ __pycache__
 /incoming_mail/migrations/
 /outgoing_mail/migrations/
 /genai/migrations/
+/genai/my_model
+/env
