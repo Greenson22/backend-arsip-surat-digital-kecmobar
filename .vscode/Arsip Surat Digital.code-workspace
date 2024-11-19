@@ -5,7 +5,6 @@
 		}
 	],
 	"settings": {
-		"workbench.colorTheme": "Default Dark Modern",
-		"python.defaultInterpreterPath": "rikal_env",
+		"workbench.colorTheme": "Default Dark Modern"
 	}
 }
