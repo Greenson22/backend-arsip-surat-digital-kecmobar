@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 import uuid
 
+# Fungsi untuk mengganti nama file surat masuk yang diunggah
 def rename_incoming_letter_file(instance, filename):
     ext = filename.split('.')[-1]
     new_filename = f'incoming_letter_{slugify(instance.letter_number)}_{uuid.uuid4()}.{ext}' 
@@ -31,11 +32,15 @@ from django.utils.timezone import now
 def generate_agenda_number(sender, instance, **kwargs):
     if not instance.agenda_number: #jika agenda number kosong
         current_year = now().year
-        last_letter = IncomingLetter.objects.filter(created_at__year=current_year).order_by('-agenda_number').first()
+        current_month = now().month
+        last_letter = IncomingLetter.objects.filter(
+            created_at__year=current_year, 
+            created_at__month=current_month
+        ).order_by('-agenda_number').first()
 
-        if last_letter: #jika terdapat surat terakhir
-            last_number = int(last_letter.agenda_number.split('/')[-1])
-            new_number = last_number + 1
-        else: #jika surat baru
+        if last_letter:  # jika terdapat surat terakhir
+            last_number = int(last_letter.agenda_number.split('/')[0])  # mengambil nomor surat terakhir
+            new_number = last_number + 1  # menambahkan satu
+        else:  # jika surat baru
             new_number = 1
-        instance.agenda_number = f"{current_year}/{new_number:04d}"
+        instance.agenda_number = f"{new_number:04d}/{current_month}/{current_year}"
