@@ -90,8 +90,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'arsip_surat_digital_kecmobar',
-        'USER': "root",
-        'PASSWORD': "",
+        'USER': "rikal",
+        'PASSWORD': "123456",
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
