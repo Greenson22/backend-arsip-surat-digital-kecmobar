@@ -5,3 +5,4 @@ __pycache__
 /genai/migrations/
 /genai/my_model
 /env
+env.yaml
