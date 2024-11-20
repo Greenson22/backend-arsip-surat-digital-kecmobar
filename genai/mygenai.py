@@ -26,6 +26,11 @@ def load_vectorizer_nb():
 with open('./env.yaml') as file:
      data = yaml.safe_load(file)
 
+# menambahkan hyperparameters
+with open('./hyperparameters.yaml') as file:
+     hyperparameters = yaml.safe_load(file)
+
+
 class MyGenAi():
      # Create the model
      def __init__(self, instruction) -> None:     
@@ -42,7 +47,7 @@ class MyGenAi():
      
      def create_model(self, system_instruction):
           model = genai.GenerativeModel(
-               model_name="gemini-1.5-flash",
+               model_name=hyperparameters['preview']['learn'],
                generation_config=self.generation_config,
                # safety_settings = Adjust safety settings
                # See https://ai.google.dev/gemini-api/docs/safety-settings
