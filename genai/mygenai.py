@@ -6,6 +6,7 @@ $ pip install google-generativeai
 
 import google.generativeai as genai
 import pickle
+import yaml
 
 system_intructions = {
      "incomingmail" : "**Instruksi:**\n\n1. **Ekstraksi Entitas:** Dari file yang diberikan, ekstrak semua entitas berikut:\n    * no agenda\n    * nomor surat\n    * tanggal surat\n    * tanggal terima\n    * asal surat\n    * perihal\n    * penerima\n\n2. **Format JSON:** Kembalikan entitas yang diekstrak dalam format JSON dengan struktur berikut:\n    * `agenda_number`: (nilai dari 'no agenda')\n    * `letter_number`: (nilai dari 'nomor surat')\n    * `letter_date`: (nilai dari 'tanggal surat', diformat sebagai yyyy-mm-dd)\n    * `received_date`: (nilai dari 'tanggal terima', diformat sebagai yyyy-mm-dd)\n    * `source`: (nilai dari 'asal surat')\n    * `subject`: (ringkasan dari 'perihal' dalam surat)\n    * `recipient`: (nilai dari 'penerima')\n\n3. **Penanganan Nilai Kosong:** Jika suatu entitas tidak ditemukan dalam teks, berikan null (`\"\"`) untuk kunci yang sesuai dalam JSON.\n\n4. **Output Eksklusif:** Pastikan output hanya berisi JSON yang dijelaskan di atas, tanpa informasi tambahan lainnya.",
@@ -21,10 +22,14 @@ def load_letter_model_nb():
 def load_vectorizer_nb():
      return pickle.load(open('genai/my_model/vectorizer_tfidf.sav', 'rb'))
 
+# mengambil data dari env
+with open('./env.yaml') as file:
+     data = yaml.safe_load(file)
+
 class MyGenAi():
      # Create the model
      def __init__(self, instruction) -> None:     
-          genai.configure(api_key='AIzaSyB8KwQjNr6RAyElNxcTMTDI_rPGtPjvWUw')
+          genai.configure(api_key=data['api_key'])
           self.generation_config = {
                "temperature": 1,
                "top_p": 0.95,
