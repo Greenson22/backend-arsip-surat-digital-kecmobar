@@ -10,10 +10,10 @@ from outgoing_mail.models import OutgoingLetter
 from .mygenai import MyGenAi
 from .mygenai import system_intructions, load_vectorizer_nb, load_letter_model_nb
 
-model_incomingmail = MyGenAi(system_intructions['incomingmail'])
-model_outgoingmail = MyGenAi(system_intructions['outgoingmail'])
-model_summary = MyGenAi(system_intructions['summary'])
-model_ocr = MyGenAi(system_intructions['ocr'])
+# model_incomingmail = MyGenAi(system_intructions['incomingmail'])
+# model_outgoingmail = MyGenAi(system_intructions['outgoingmail'])
+# model_summary = MyGenAi(system_intructions['summary'])
+# model_ocr = MyGenAi(system_intructions['ocr'])
 
 # naive bayes
 model_naivebayes = load_letter_model_nb()
@@ -23,12 +23,16 @@ category = {1: 'Surat Perintah', 4: 'Surat Undangan', 0: 'Surat Edaran', 2: 'Sur
 
 class ExtractLetterEntitiesView(APIView):
      def post(self, request):
-          model = model_incomingmail
+          genai_type = request.data['genai_type']
+          model = MyGenAi(genai_type, system_intructions['incomingmail'])
+
           # mengecek jika request terdapat model dan type outgoingmail
           if 'model_type' in request.data and request.data['model_type'] == 'outgoingmail':
-               model = model_outgoingmail
+               model = MyGenAi(genai_type, system_intructions['outgoingmail'])
 
           file = request.FILES['file']
+          
+
           data = json.loads(model.generate_content_file(file))
           response = {
                'name' : file.name,
@@ -38,7 +42,8 @@ class ExtractLetterEntitiesView(APIView):
 
 class LetterOCRView(APIView):
      def post(self, request):
-          model =  model_ocr
+          genai_type = request.data['genai_type']
+          model =  MyGenAi(genai_type, system_intructions['ocr'])
 
           file = request.FILES['file']
           data = model.generate_content_file(file)
@@ -66,7 +71,8 @@ class LetterLocalClassification(APIView):
                letter = OutgoingLetter.objects.get(pk=request.data['id'])
 
           # # melakukan ekstrak text dari surat
-          model =  model_ocr
+          genai_type = request.data['genai_type']
+          model =  MyGenAi(genai_type, system_intructions['ocr'])
           letter_text = model.generate_content_file(letter.file)
           # melakukan classify dengan model naive bayes
           modelnb = model_naivebayes
@@ -82,8 +88,8 @@ class LetterLocalClassification(APIView):
 
 class SummarizeLetterView(APIView):
      def post(self, request):
-          global model2
-          response = process_file_with_model(request.FILES['file'], model_summary)
+          genai_type = request.data['genai_type']
+          response = process_file_with_model(request.FILES['file'], MyGenAi(genai_type, system_intructions['summary']))
           return Response(json.loads(response))
      
 class MultipleExtractLetterEntitiesView(APIView):
