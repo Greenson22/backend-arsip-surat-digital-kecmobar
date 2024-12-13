@@ -33,7 +33,7 @@ with open('./hyperparameters.yaml') as file:
 
 class MyGenAi():
      # Create the model
-     def __init__(self, instruction) -> None:     
+     def __init__(self, model_type, instruction) -> None:     
           genai.configure(api_key=data['api_key'])
           self.generation_config = {
                "temperature": 1,
@@ -42,12 +42,12 @@ class MyGenAi():
                "max_output_tokens": 8192,
                "response_mime_type": "application/json",
           }
-          self.create_model(instruction)
+          self.create_model(model_type, instruction)
           self.create_chat()
      
-     def create_model(self, system_instruction):
+     def create_model(self, model_type, system_instruction):
           model = genai.GenerativeModel(
-               model_name=hyperparameters['preview']['learn'],
+               model_name=hyperparameters['model_type'][model_type],
                generation_config=self.generation_config,
                # safety_settings = Adjust safety settings
                # See https://ai.google.dev/gemini-api/docs/safety-settings
