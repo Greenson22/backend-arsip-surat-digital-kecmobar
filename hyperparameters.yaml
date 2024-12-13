@@ -11,3 +11,13 @@ gemini-flash:
 preview:
   learn : learnlm-1.5-pro-experimental
   experimental : gemini-exp-1114
+
+model_type:
+  pro : gemini-1.5-pro
+  pro2 : gemini-1.5-pro-002
+  pro1 : gemini-1.0-pro
+  flash : gemini-1.5-flash
+  flash2 : gemini-1.5-flash-002
+  flash8b : gemini-1.5-flash-8b 
+  learn : learnlm-1.5-pro-experimental
+  experimental : gemini-exp-1114
